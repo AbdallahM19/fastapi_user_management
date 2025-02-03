@@ -7,8 +7,8 @@ from app.user_management_api import user_management_apis
 
 app = FastAPI()
 
-app.include_router(user_apis, tags=["users-api"])
-app.include_router(user_management_apis, tags=["user-management-api"])
+app.include_router(user_apis)
+app.include_router(user_management_apis)
 
 
 @app.on_event("startup")
