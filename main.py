@@ -1,6 +1,6 @@
 """/main.py"""
 
-from app.user_api import app
+from app import app
 
 if __name__ == "__main__":
     import uvicorn
