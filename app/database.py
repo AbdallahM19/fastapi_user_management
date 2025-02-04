@@ -5,12 +5,13 @@ from typing import Optional
 from sqlmodel import Field, Session, SQLModel, create_engine
 
 class UserBase(SQLModel):
-    username: str = Field(index=True)
     age: int | None = Field(default=None, index=True)
+    username: str = Field(unique=True, index=True)
 
 class User(UserBase, table=True):
-    id: Optional[int] = Field(default=None, primary_key=True)
-    email: Optional[str] = Field(default=None, index=True)
+    id: Optional[int] = Field(default=None, unique=True, primary_key=True)
+    email: Optional[str] = Field(default=None, unique=True, index=True)
+    session_id: Optional[str] = Field(default=None, unique=True, index=True)
 
 class UserPublic(UserBase):
     id: int
