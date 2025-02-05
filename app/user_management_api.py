@@ -2,7 +2,7 @@
 
 from typing import Annotated, Optional
 from re import match
-from fastapi import APIRouter, Depends, HTTPException, Form, Query
+from fastapi import APIRouter, Depends, HTTPException, Form, Query, Response
 from sqlmodel import Session, select, delete, update
 from app.helper import EMAIL_REGEX, user_helper, res_helper
 
@@ -20,7 +20,8 @@ async def login():
 @user_management_apis.post("/login/")
 async def login(
     username: Annotated[str, Form(min_length=3, max_length=100)],
-    password: Annotated[str, Form()]
+    password: Annotated[str, Form()],
+    res: Response
 ):
     """Login"""
     try:
@@ -35,6 +36,8 @@ async def login(
         if user["password"] != password:
             raise HTTPException(status_code=401, detail="Invalid password")
 
+        res_helper.set_session_id(user["session_id"], res)
+
         return {"username": username, "password": password}
     except HTTPException as http_ex:
         raise http_ex
@@ -42,8 +45,9 @@ async def login(
         raise HTTPException(status_code=500, detail=str(e))
 
 @user_management_apis.get("/register/")
-async def read_register(username: str = Query(...), password: str = Form(...)):
-    return {"username": username, "password": password}
+async def read_register():
+    """Read register"""
+    return {"message": "Register"}
 
 @user_management_apis.post("/register/")
 async def read_register(username: str = Query(...), password: str = Form(...)):
