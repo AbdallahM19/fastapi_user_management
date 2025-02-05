@@ -50,8 +50,29 @@ async def read_register():
     return {"message": "Register"}
 
 @user_management_apis.post("/register/")
-async def read_register(username: str = Query(...), password: str = Form(...)):
-    return {"username": username, "password": password}
+async def read_register(
+    username: Annotated[str, Form(min_length=3, max_length=24)],
+    email: Annotated[str, Form(max_length=100, regex=EMAIL_REGEX)],
+    res: Response,
+    password: str = Form(...)
+):
+    """Register"""
+    try:
+        user = user_helper.get_user_by_username(username)
+        if user:
+            raise HTTPException(status_code=400, detail="Username already exists")
+
+        user = user_helper.get_user_by_email(email)
+        if user:
+            raise HTTPException(status_code=400, detail="Email already exists")
+
+        user = user_helper.create_user(username, email, password)
+        res_helper.set_session_id(user["session_id"], res)
+        return user
+    except HTTPException as http_ex:
+        raise http_ex
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @user_management_apis.delete("/logout/")
 async def read_logout(username: str = Query(...)):
