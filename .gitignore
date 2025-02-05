@@ -1,3 +1,4 @@
 .vscode
 app/__pycache__
 database.db
+log.txt
