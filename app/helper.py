@@ -87,5 +87,24 @@ class ResponseHelper():
         res.delete_cookie("session_id")
 
 
+class NotificationHelper():
+    def __init__(self):
+        """Initialize NotificationHelper"""
+        pass
+
+    def send_notification_task(self, email: str, message: str):
+        """Send notification task"""
+        with open("log.txt", mode="a") as email_file:
+            content = f"notification for {email}: {message}\n"
+            email_file.write(content)
+
+    def receive_notification_task(self, email: str):
+        """Receive notification task"""
+        with open("log.txt", mode="r") as email_file:
+            content = email_file.read()
+            print(content)
+
+
 user_helper = UserHelper()
 res_helper = ResponseHelper()
+notification_helper = NotificationHelper()
