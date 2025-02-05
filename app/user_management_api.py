@@ -75,5 +75,10 @@ async def read_register(
         raise HTTPException(status_code=500, detail=str(e))
 
 @user_management_apis.delete("/logout/")
-async def read_logout(username: str = Query(...)):
-    return {"username": username}
+async def read_logout(res: Response):
+    """Logout"""
+    try:
+        res_helper.clear_session_id(res)
+        return {"ok": True}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
