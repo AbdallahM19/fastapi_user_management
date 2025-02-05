@@ -1,5 +1,6 @@
 """/app/helper.py"""
 
+from re import match
 from uuid import uuid4
 from typing import Annotated, Optional
 from fastapi import Depends, Response, Cookie
@@ -63,6 +64,10 @@ class UserHelper():
         """Generate session id"""
         return str(uuid4())
 
+    def check_email_match(self, email: str):
+        """Check email match"""
+        return match(EMAIL_REGEX, email)
+
 
 class ResponseHelper():
     def __init__(self):
@@ -98,11 +103,11 @@ class NotificationHelper():
             content = f"notification for {email}: {message}\n"
             email_file.write(content)
 
-    def receive_notification_task(self, email: str):
-        """Receive notification task"""
-        with open("log.txt", mode="r") as email_file:
-            content = email_file.read()
-            print(content)
+    # def receive_notification_task(self, email: str):
+    #     """Receive notification task"""
+    #     with open("log.txt", mode="r") as email_file:
+    #         content = email_file.read()
+    #         print(content)
 
 
 user_helper = UserHelper()
