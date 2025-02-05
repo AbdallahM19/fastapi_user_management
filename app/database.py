@@ -25,6 +25,17 @@ class UserUpdate(UserBase):
     email: Optional[str] = None
 
 
+class NotificationBase(SQLModel):
+    datetime: Optional[str] = Field(default=None, index=True)
+    message: str = Field(index=True)
+    email: str = Field(index=True)
+
+class Notification(NotificationBase, table=True):
+    id: Optional[int] = Field(default=None, unique=True, primary_key=True)
+    user_id: Optional[int] = Field(default=None, index=True)
+    is_read: bool = Field(default=False, index=True)
+
+
 sqlite_file_name = "database.db"
 
 engine = create_engine(
@@ -42,5 +53,6 @@ def get_session():
 
 __all__ = [
     'User', 'UserBase', 'UserPublic', 'UserCreate', 'UserUpdate',
+    'Notification', 'NotificationBase',
     'get_session', 'create_db_and_tables'
 ]
