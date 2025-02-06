@@ -1,4 +1,6 @@
 .vscode
+__pycache__
+.pytest_cache
 app/__pycache__
 database.db
 log.txt
