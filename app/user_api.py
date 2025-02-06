@@ -2,7 +2,7 @@
 
 from typing import Annotated, Union, Optional
 
-from fastapi import APIRouter, Depends, HTTPException, Query, Response
+from fastapi import APIRouter, Depends, HTTPException, status, Response
 from sqlmodel import delete
 from app.database import *
 from app.helper import SessionDep, user_helper, res_helper
@@ -24,7 +24,7 @@ def get_current_user(session_id: Annotated[str, Depends(res_helper.get_session_i
     return user_helper.get_user_by_session_id(session_id, session)
 
 
-@user_apis.get("/{user_identifier}", response_model=Union[list[UserBase], UserBase, None])
+@user_apis.get("/{user_identifier}", response_model=Union[User, None])
 def get_user_by_user_id(user_identifier: Union[int, str], session: SessionDep):
     if isinstance(user_identifier, int) or (isinstance(user_identifier, str) and user_identifier.isdigit()):
         user = user_helper.get_user_by_id(int(user_identifier), session)
@@ -33,7 +33,7 @@ def get_user_by_user_id(user_identifier: Union[int, str], session: SessionDep):
     return user
 
 
-@user_apis.post("/", response_model=UserPublic)
+@user_apis.post("/", response_model=UserPublic, status_code=status.HTTP_201_CREATED)
 def create_user(
     user: Annotated[User, Depends(user_helper.create_user)],
     res: Response
