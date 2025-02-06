@@ -97,11 +97,35 @@ class NotificationHelper():
         """Initialize NotificationHelper"""
         pass
 
-    def send_notification_task(self, email: str, message: str):
+    def get_notifications(self, user_id: int, session: SessionDep):
+        """Get notifications"""
+        return session.exec(
+            select(Notification).where(Notification.user_id == user_id)
+        ).all()
+
+    def mark_notification_as_read(self, notification_id: int, session: SessionDep):
+        """Mark notification as read"""
+        notification = session.exec(
+            select(Notification).where(Notification.id == notification_id)
+        ).first()
+
+        if not notification:
+            return None
+
+        notification.is_read = True
+        session.add(notification)
+        session.commit()
+        return notification
+
+    def send_notification_task(self, email: str, message: str, session: SessionDep):
         """Send notification task"""
-        with open("log.txt", mode="a") as email_file:
-            content = f"notification for {email}: {message}\n"
-            email_file.write(content)
+        user = user_helper.get_user_by_email(email, session)
+        if not user:
+            return None
+
+        new_notification = Notification(user_id=user.id, email=email, message=message)
+        session.add(new_notification)
+        session.commit()
 
     # def receive_notification_task(self, email: str):
     #     """Receive notification task"""
