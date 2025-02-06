@@ -3,7 +3,7 @@
 from re import match
 from uuid import uuid4
 from typing import Annotated, Optional
-from fastapi import Depends, Response, Cookie
+from fastapi import Depends, Response, Cookie, HTTPException
 from sqlmodel import Session, select, delete, update
 from app.database import *
 
@@ -39,6 +39,12 @@ class UserHelper():
 
     def create_user(self, session: SessionDep, user: UserCreate):
         """Create user"""
+        if self.get_user_by_username(user.username, session):
+            raise HTTPException(status_code=400, detail="Username already exists")
+
+        if self.get_user_by_email(user.email, session):
+            raise HTTPException(status_code=400, detail="Email already exists")
+
         db_user = User.model_validate(user)
         db_user.session_id = self.generate_session_id()
 
