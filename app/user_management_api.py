@@ -52,7 +52,7 @@ async def read_register():
 @user_management_apis.post("/register/")
 async def read_register(
     username: Annotated[str, Form(min_length=3, max_length=24)],
-    email: Annotated[str, Form(max_length=100, regex=EMAIL_REGEX)],
+    email: Annotated[str, Form(max_length=100, pattern=EMAIL_REGEX)],
     res: Response,
     password: str = Form(...)
 ):
