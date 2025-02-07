@@ -42,6 +42,11 @@ $ python -c 'from app import create_db_and_tables; create_db_and_tables()'
 $ uvicorn app:app --reload
 ```
 
+### 6. Run Application Tests
+```sh
+$ py -m pytest test_app.py 
+```
+
 The API will be available at `http://127.0.0.1:8000`.
 
 ## API Endpoints
