@@ -1,23 +1,29 @@
 """database.py"""
 
-from typing import Optional
+from typing import Annotated, Optional
 
+from fastapi import Form
 from sqlmodel import Field, Session, SQLModel, create_engine
+
+EMAIL_REGEX = r"^([a-z]+)((([a-z]+)|(_[a-z]+))?(([0-9]+)|(_[0-9]+))?)*@([a-z]+).([a-z]+)$"
+
 
 class UserBase(SQLModel):
     age: int | None = Field(default=None, index=True)
-    username: str = Field(unique=True, index=True)
+    username: str = Field(min_length=3, max_length=24, unique=True, index=True)
 
 class User(UserBase, table=True):
     id: Optional[int] = Field(default=None, unique=True, primary_key=True)
     email: Optional[str] = Field(default=None, unique=True, index=True)
+    password: Optional[str] = Field(default=None, index=True)
     session_id: Optional[str] = Field(default=None, unique=True, index=True)
 
 class UserPublic(UserBase):
     id: int
 
 class UserCreate(UserBase):
-    email: str
+    email: Annotated[str, Form(max_length=100, pattern=EMAIL_REGEX)]
+    password: str = Form(...)
 
 class UserUpdate(UserBase):
     username: Optional[str] = None
@@ -54,5 +60,6 @@ def get_session():
 __all__ = [
     'User', 'UserBase', 'UserPublic', 'UserCreate', 'UserUpdate',
     'Notification', 'NotificationBase',
-    'get_session', 'create_db_and_tables'
+    'get_session', 'create_db_and_tables',
+    'EMAIL_REGEX',
 ]
