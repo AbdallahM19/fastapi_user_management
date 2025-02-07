@@ -7,8 +7,6 @@ from fastapi import Depends, Response, Cookie, HTTPException
 from sqlmodel import Session, select, delete, update
 from app.database import *
 
-EMAIL_REGEX = r"^([a-z]+)((([a-z]+)|(_[a-z]+))?(([0-9]+)|(_[0-9]+))?)*@([a-z]+).([a-z]+)$"
-
 SessionDep = Annotated[Session, Depends(get_session)]
 
 
