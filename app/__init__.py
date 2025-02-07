@@ -39,3 +39,12 @@ app.include_router(notification_apis)
 @app.on_event("startup")
 def on_startup():
     create_db_and_tables()
+
+# {
+#   "password": "000",
+#   "id": 1,
+#   "email": "wolv@email.com",
+#   "username": "wolv",
+#   "age": 20,
+#   "session_id": "3577a29f-fa92-4e88-97cb-9aa04b8b052a"
+# }
