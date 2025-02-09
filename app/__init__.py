@@ -1,6 +1,8 @@
 """/app/__init__.py"""
 
-from fastapi import FastAPI
+import time
+
+from fastapi import FastAPI, Request
 from app.database import create_db_and_tables
 from app.user_api import user_apis
 from app.user_management_api import user_management_apis
@@ -39,6 +41,16 @@ app.include_router(notification_apis)
 @app.on_event("startup")
 def on_startup():
     create_db_and_tables()
+
+@app.middleware("http")
+async def middleware_connection(req:Request, call_next):
+    start_time = time.perf_counter()
+    res = await call_next(req)
+    process_time = time.perf_counter() - start_time
+    print("-"*20)
+    print(f"Process time: {process_time:.4f} seconds")
+    print("-"*20)
+    return res
 
 # {
 #   "password": "000",
