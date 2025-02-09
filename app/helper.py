@@ -79,10 +79,10 @@ class ResponseHelper():
         pass
 
     @staticmethod
-    def get_session_id(session_id: str = Cookie(None)):
+    def get_session_id(session_id: str = Cookie(None)) -> Optional[str]:
         """Get session id from cookie"""
         if not session_id:
-            return "Session id not found"
+            return None
         return session_id
 
     @staticmethod
