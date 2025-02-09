@@ -21,6 +21,8 @@ def get_users(users: Annotated[list[User], Depends(user_helper.get_all_users)]):
 
 @user_apis.get("/me", response_model=Optional[User])
 def get_current_user(session_id: Annotated[str, Depends(res_helper.get_session_id)], session: SessionDep):
+    if session_id is None:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid session")
     return user_helper.get_user_by_session_id(session_id, session)
 
 
