@@ -1,8 +1,10 @@
-"""app.py"""
+"""/app/user_management_api.py.py"""
 
 from typing import Annotated, Optional
 from re import match
-from fastapi import APIRouter, Depends, HTTPException, Form, Query, Response
+from fastapi import APIRouter, Depends, HTTPException, Form, Query, Response, Request
+from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
 # from sqlmodel import Session, select, delete, update
 from app.database import UserCreate
 from app.helper import EMAIL_REGEX, SessionDep, user_helper, res_helper
@@ -12,13 +14,14 @@ user_management_apis = APIRouter(
     tags=["user-management-api"],
 )
 
+templates = Jinja2Templates(directory="app/templates")
 
-@user_management_apis.get("/login/", operation_id="get_login_page")
-async def login():
-    """Read login"""
-    return {"message": "Login"}
 
-@user_management_apis.post("/login/", operation_id="login_processes")
+@user_management_apis.get("/login", operation_id="get_login_page", response_class=HTMLResponse)
+async def login(request: Request):
+    return templates.TemplateResponse("login.html", {"request": request})
+
+@user_management_apis.post("/login", operation_id="login_processes")
 async def login(
     username: Annotated[str, Form(min_length=3, max_length=100)],
     password: Annotated[str, Form()],
@@ -46,12 +49,12 @@ async def login(
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@user_management_apis.get("/register/", operation_id="get_register_page")
+@user_management_apis.get("/register", operation_id="get_register_page")
 async def read_register():
     """Read register"""
     return {"message": "Register"}
 
-@user_management_apis.post("/register/", operation_id="register_processes")
+@user_management_apis.post("/register", operation_id="register_processes")
 async def read_register(user: UserCreate, res: Response, session: SessionDep):
     """Register"""
     try:
@@ -63,7 +66,7 @@ async def read_register(user: UserCreate, res: Response, session: SessionDep):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@user_management_apis.delete("/logout/", operation_id="logout_processes")
+@user_management_apis.delete("/logout", operation_id="logout_processes")
 async def logout(res: Response):
     """Logout"""
     try:
