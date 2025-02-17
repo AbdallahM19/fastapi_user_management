@@ -19,7 +19,13 @@ templates = Jinja2Templates(directory="app/templates")
 
 @user_management_apis.get("/login", operation_id="get_login_page", response_class=HTMLResponse)
 async def login(request: Request):
-    return templates.TemplateResponse("login.html", {"request": request})
+    return templates.TemplateResponse(
+        "login_or_register.html",
+        {
+            "title": "Login",
+            "request": request
+        }
+    )
 
 @user_management_apis.post("/login", operation_id="login_processes")
 async def login(
