@@ -56,9 +56,15 @@ async def login(
         raise HTTPException(status_code=500, detail=str(e))
 
 @user_management_apis.get("/register", operation_id="get_register_page")
-async def read_register():
+async def read_register(request: Request):
     """Read register"""
-    return {"message": "Register"}
+    return templates.TemplateResponse(
+        "login_or_register.html",
+        {
+            "title": "Register",
+            "request": request
+        }
+    )
 
 @user_management_apis.post("/register", operation_id="register_processes")
 async def read_register(user: UserCreate, res: Response, session: SessionDep):
