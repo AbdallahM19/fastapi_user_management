@@ -78,6 +78,14 @@ async def read_register(user: UserCreate, res: Response, session: SessionDep):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+@user_management_apis.get("/dashboard", operation_id="get_dashboard")
+async def read_dashboard(session_id: Annotated[str, Depends(res_helper.get_session_id)], session: SessionDep):
+    """Read dashboard"""
+    return {
+        "title": "Dashboard",
+        "current user": user_helper.get_user_by_session_id(session_id, session)
+    }
+
 @user_management_apis.delete("/logout", operation_id="logout_processes")
 async def logout(res: Response):
     """Logout"""
